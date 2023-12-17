@@ -67,9 +67,23 @@ rm -rf /tmp/back4
 sudo sed -i s'@<policy domain="resource" name="memory" value=".*"/>@<policy domain="resource" name="memory" value="2GiB"/>@'g /etc/ImageMagick-6/policy.xml
 ```
 
+# If you want to use python version
+# Requierments:
+- python 3.X
+- feh or xload or [xwallpaper](https://github.com/stoeckmann/xwallpaper)
 
-<br>
-<br>
+# To Run it:
+First you need to add executable flag to back4.py
+```
+sudo chmod +x back4.py
+``` 
+After that you can run it. For now you have to call it localy:
+```
+./back4.py auto gif/train.gif &
+```
+
+# If you like it support the originator
+
 <a href="https://ko-fi.com/thomas1010">
 <img src="https://uploads-ssl.webflow.com/5c14e387dab576fe667689cf/61e11d430afb112ea33c3aa5_Button-1-p-500.png" alt="drawing" width="200"/>
  </a>
