@@ -69,8 +69,9 @@ sudo sed -i s'@<policy domain="resource" name="memory" value=".*"/>@<policy doma
 
 # If you want to use python version
 # Requierments:
-- python 3.X
+- python 3.10
 - feh or xload or [xwallpaper](https://github.com/stoeckmann/xwallpaper)
+- imagemagick
 
 # To Run it:
 First you need to add executable flag to back4.py
