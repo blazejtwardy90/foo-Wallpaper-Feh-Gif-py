@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import subprocess
-import hashlib
+from hashlib import md5
 import os
 import sys
 from time import sleep
@@ -16,7 +16,7 @@ FREMESPERSECOND = 30
 
 def createHash(file_path: str):
     file_path = file_path.encode(encoding="utf-8")
-    hash_path = hashlib.md5(file_path).hexdigest()
+    hash_path = md5(file_path).hexdigest()
     return hash_path
 
 def createHashDir(dir_to_created):
