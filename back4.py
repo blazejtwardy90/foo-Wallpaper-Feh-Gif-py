@@ -6,6 +6,12 @@ import os
 import sys
 from time import sleep
 
+class Command():
+    FEHCOMMAND = ['feh','--bg-fill', '--no-fehbg']
+    XWALLPAPERCOMMAND=['xwallpaper','--zoom']
+    XLOADIMAGE=['xloadimage', '-onroot', '-fullscreen']
+    UBUNTUXFCCOMMAND = ['xfconf-query', '-c', 'xfce4-desktop', '-p', '/backdrop/screen0/monitor0/workspace0/last-image', '-s']
+
 FREMESPERSECOND = 30
 
 def createHash(file_path: str):
@@ -26,6 +32,7 @@ def createHashDir(dir_to_created):
 def main(arg1, arg2):
     speed = str(arg1).lower()
     file_path = str(arg2)
+    used_program = Command.FEHCOMMAND
     
     created_hash = createHash(file_path)
     create_dir = 'tmp/' + created_hash
@@ -44,7 +51,8 @@ def main(arg1, arg2):
     try:
         while True:
             for index in range(amount_of_frames):
-                subprocess.run(['feh','--bg-fill', '--no-fehbg', f'{create_dir}/{created_hash}-{index}.png'])
+                full_command = used_program + [f'{create_dir}/{created_hash}-{index}.png']
+                subprocess.run(full_command)
                 sleep(speed) 
     except KeyboardInterrupt:
         print("Bye...")
