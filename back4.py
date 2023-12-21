@@ -32,7 +32,7 @@ def screenCheck(shared_variable):
         else:
             #Screen is unlocked. Setting event to resume animation
             screen_lock_event.set()
-        sleep(1) 
+        sleep(3) 
     print("Screen Check Stopped")
 
 def createHash(file_path: str):
@@ -64,7 +64,10 @@ def main(arg1, arg2):
     new_dir_created = createHashDir(create_dir)
     
     if new_dir_created == True:
+        print("Creating frames")
         subprocess.run(['convert', '-coalesce', file_path, f'{create_dir}/{created_hash}.png'])
+    else:
+        print("Dir already created")
     
     only_files = next(os.walk(create_dir))[2]
     amount_of_frames = len(only_files)
