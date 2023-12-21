@@ -5,6 +5,8 @@ from hashlib import md5
 import os
 import sys
 from time import sleep
+import threading
+import dbus
 
 class Command():
     FEHCOMMAND = ['feh','--bg-fill', '--no-fehbg']
@@ -13,6 +15,25 @@ class Command():
     UBUNTUXFCCOMMAND = ['xfconf-query', '-c', 'xfce4-desktop', '-p', '/backdrop/screen0/monitor0/workspace0/last-image', '-s']
 
 FREMESPERSECOND = 30
+
+screen_lock_event = threading.Event()
+
+def isScreenLocked():
+    bus = dbus.SessionBus()
+    screensaver_proxy = bus.get_object('org.cinnamon.ScreenSaver', '/org/cinnamon/ScreenSaver')
+    screensaver_interface = dbus.Interface(screensaver_proxy, 'org.cinnamon.ScreenSaver')
+    return bool(screensaver_interface.GetActive())
+
+def screenCheck(shared_variable):
+    while shared_variable['stop'] == False:
+        if isScreenLocked():
+            #Screen is locked. Setting event to pause animation
+            screen_lock_event.clear()
+        else:
+            #Screen is unlocked. Setting event to resume animation
+            screen_lock_event.set()
+        sleep(1) 
+    print("Screen Check Stopped")
 
 def createHash(file_path: str):
     file_path = file_path.encode(encoding="utf-8")
@@ -32,6 +53,10 @@ def createHashDir(dir_to_created):
 def main(arg1, arg2):
     speed = str(arg1).lower()
     file_path = str(arg2)
+    shared_variable = {'stop': False}
+    screen_check_thread = threading.Thread(target=screenCheck, args=(shared_variable,))
+    screen_check_thread.start()
+
     used_program = Command.FEHCOMMAND
     
     created_hash = createHash(file_path)
@@ -50,12 +75,16 @@ def main(arg1, arg2):
     
     try:
         while True:
+            screen_lock_event.wait()
             for index in range(amount_of_frames):
                 full_command = used_program + [f'{create_dir}/{created_hash}-{index}.png']
                 subprocess.run(full_command)
                 sleep(speed) 
     except KeyboardInterrupt:
         print("Bye...")
+    finally:
+        shared_variable['stop'] = True
+        screen_check_thread.join()
 
 if __name__ == "__main__":
     main(sys.argv[1], sys.argv[2])
