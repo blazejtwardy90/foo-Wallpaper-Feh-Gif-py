@@ -90,4 +90,7 @@ def main(arg1, arg2):
         screen_check_thread.join()
 
 if __name__ == "__main__":
-    main(sys.argv[1], sys.argv[2])
+    if len(sys.argv) < 3:
+        print("No arguments foun ending program")
+    else:
+        main(sys.argv[1], sys.argv[2])
