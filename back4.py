@@ -20,8 +20,16 @@ screen_lock_event = threading.Event()
 
 def isScreenLocked():
     bus = dbus.SessionBus()
-    screensaver_proxy = bus.get_object('org.cinnamon.ScreenSaver', '/org/cinnamon/ScreenSaver')
-    screensaver_interface = dbus.Interface(screensaver_proxy, 'org.cinnamon.ScreenSaver')
+    desktop_environment = os.environ.get('DESKTOP_SESSION')
+    
+    match desktop_environment:
+        case 'cinnamon':
+            screensaver_proxy = bus.get_object('org.cinnamon.ScreenSaver', '/org/cinnamon/ScreenSaver')
+            screensaver_interface = dbus.Interface(screensaver_proxy, 'org.cinnamon.ScreenSaver')
+        case _:
+            screensaver_proxy = bus.get_object('org.freedesktop.ScreenSaver', '/org/freedesktop/ScreenSaver')
+            screensaver_interface = dbus.Interface(screensaver_proxy, 'org.freedesktop.ScreenSaver')
+    
     return bool(screensaver_interface.GetActive())
 
 def screenCheck(shared_variable):
